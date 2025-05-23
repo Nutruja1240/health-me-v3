@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Health Me - โปรแกรมประเมินสุขภาพ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="Health Me Logo" class="logo">
+                <div>
+                    <h1>Health Me</h1>
+                    <p class="subtitle">โปรแกรมประเมินสุขภาพส่วนบุคคล</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="form-container">
+            <form id="healthForm">
+                <div class="form-group">
+                    <label for="age">อายุ (ปี)</label>
+                    <input type="number" id="age" name="age" min="16" max="59" required>
+                </div>
+
+                <div class="form-group">
+                    <label>เพศ</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="gender" value="male" required> ชาย</label>
+                        <label><input type="radio" name="gender" value="female"> หญิง</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="waist">รอบเอว (เซนติเมตร)</label>
+                    <input type="number" id="waist" name="waist" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">น้ำหนัก (กิโลกรัม)</label>
+                    <input type="number" id="weight" name="weight" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="height">ส่วนสูง (เซนติเมตร)</label>
+                    <input type="number" id="height" name="height" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="systolic">ความดันโลหิตตัวบน (mmHg)</label>
+                    <input type="number" id="systolic" name="systolic" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="diastolic">ความดันโลหิตตัวล่าง (mmHg)</label>
+                    <input type="number" id="diastolic" name="diastolic" required>
+                </div>
+
+                <h3 class="section-title">ผลทดสอบสมรรถภาพร่างกาย</h3>
+
+                <div class="form-group">
+                    <label for="gripStrength">แรงบีบมือ (กิโลกรัม)</label>
+                    <input type="number" id="gripStrength" name="gripStrength" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sitAndReach">การนั่งงอตัวไปข้างหน้า (เซนติเมตร)</label>
+                    <input type="number" id="sitAndReach" name="sitAndReach" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sitUps">การซิตอัพ 30 วินาที (ครั้ง)</label>
+                    <input type="number" id="sitUps" name="sitUps" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="chairStand">การลุก-นั่งบนเก้าอี้ 60 วินาที (ครั้ง)</label>
+                    <input type="number" id="chairStand" name="chairStand" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="stepTest">การยกเข่าขึ้น-ลง 3 นาที (ครั้ง)</label>
+                    <input type="number" id="stepTest" name="stepTest" required>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-chart-line"></i> ประเมินผล
+                </button>
+            </form>
+        </div>
+
+        <div id="results" class="results-container" style="display: none;">
+            <h2 class="results-title">
+                <i class="fas fa-clipboard-list"></i> ผลการประเมินสุขภาพ
+            </h2>
+            
+            <div class="result-section" id="bmiResult">
+                <h3><i class="fas fa-weight"></i> ดัชนีมวลกาย (BMI)</h3>
+                <div class="result-content"></div>
+            </div>
+
+            <div class="result-section" id="waistResult">
+                <h3><i class="fas fa-ruler-combined"></i> รอบเอว</h3>
+                <div class="result-content"></div>
+            </div>
+
+            <div class="result-section" id="bloodPressureResult">
+                <h3><i class="fas fa-heartbeat"></i> ความดันโลหิต</h3>
+                <div class="result-content"></div>
+            </div>
+
+            <div class="result-section" id="fitnessResult">
+                <h3><i class="fas fa-running"></i> ผลทดสอบสมรรถภาพร่างกาย</h3>
+                <div class="result-content"></div>
+            </div>
+
+            <div class="signature">
+                <p>ด้วยความปรารถนาดีจาก</p>
+                <p>กลุ่มงานสุขศึกษา โรงพยาบาลพุทธโสธร</p>
+            </div>
+
+            <button id="savePdf" class="pdf-btn">
+                <i class="fas fa-file-pdf"></i> บันทึกผลเป็น PDF
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="pdf-generator.js"></script>
+</body>
+</html>
